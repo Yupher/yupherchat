@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import messageService from "./messageService";
 import io from "socket.io-client";
-const END_POINT = "http://localhost:5000";
+const END_POINT = "https://localhost:5000";
 
 export const socket = io(END_POINT);
 

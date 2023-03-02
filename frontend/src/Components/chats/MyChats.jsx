@@ -1,7 +1,7 @@
 import { Box, Button, Stack, Text } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
-import SearchLoading from "./SearchLoading";
-import { selectChat } from "../features/chat/chatSlice";
+import SearchLoading from "../layouts/SearchLoading";
+import { selectChat } from "../../features/chat/chatSlice";
 import GroupChatModal from "./GroupChatModal";
 
 const MyChats = () => {

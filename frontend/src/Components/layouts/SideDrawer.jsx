@@ -21,17 +21,17 @@ import {
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 
-import ProfileModal from "./ProfileModal";
-import { logout, reset as userReset } from "../features/auth/authSlice";
-import { accessChat, reset as chatReset } from "../features/chat/chatSlice";
-import { resetNotifications } from "../features/messages/messageSlice";
+import ProfileModal from "../users/ProfileModal";
+import { logout, reset as userReset } from "../../features/auth/authSlice";
+import { accessChat, reset as chatReset } from "../../features/chat/chatSlice";
+import { resetNotifications } from "../../features/messages/messageSlice";
 import {
   searchUsers,
   reset as searchReset,
-} from "../features/users/usersSlice";
+} from "../../features/users/usersSlice";
 import { toast } from "react-toastify";
 import SearchLoading from "./SearchLoading";
-import UserListItem from "./UserListItem";
+import UserListItem from "../users/UserListItem";
 
 const SideDrawer = ({ user }) => {
   const [search, setSearch] = useState("");

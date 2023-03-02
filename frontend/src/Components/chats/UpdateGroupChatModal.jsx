@@ -19,18 +19,18 @@ import {
   InputRightElement,
   Spinner,
 } from "@chakra-ui/react";
-import UserBadgeItem from "./UserBadgeItem";
+import UserBadgeItem from "../users/UserBadgeItem";
 import {
   addToGroup,
   deleteFromGroup,
   renameGroup,
-} from "../features/chat/chatSlice";
+} from "../../features/chat/chatSlice";
 import { toast } from "react-toastify";
 import {
   searchUsers,
   reset as clearSearch,
-} from "../features/users/usersSlice";
-import UserListItem from "./UserListItem";
+} from "../../features/users/usersSlice";
+import UserListItem from "../users/UserListItem";
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
 
 const UpdateGroupChatModal = () => {

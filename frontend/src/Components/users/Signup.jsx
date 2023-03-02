@@ -11,7 +11,7 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 
 import { toast } from "react-toastify";
-import { register } from "../features/auth/authSlice";
+import { register } from "../../features/auth/authSlice";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);

@@ -11,7 +11,7 @@ import {
 
 import { useSelector, useDispatch } from "react-redux";
 
-import { login } from "../features/auth/authSlice";
+import { login } from "../../features/auth/authSlice";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);

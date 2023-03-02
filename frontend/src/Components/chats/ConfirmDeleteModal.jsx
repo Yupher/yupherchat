@@ -19,7 +19,7 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteGroup as deleteGroupFunction } from "../features/chat/chatSlice";
+import { deleteGroup as deleteGroupFunction } from "../../features/chat/chatSlice";
 import { toast } from "react-toastify";
 
 const ConfirmDeleteModal = ({ selectedChat, closeParentModal }) => {

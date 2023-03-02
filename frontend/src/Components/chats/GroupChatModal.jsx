@@ -15,14 +15,14 @@ import {
   Box,
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
-import { createGroup } from "../features/chat/chatSlice";
+import { createGroup } from "../../features/chat/chatSlice";
 import {
   searchUsers,
   reset as clearSearch,
-} from "../features/users/usersSlice";
-import UserListItem from "./UserListItem";
+} from "../../features/users/usersSlice";
+import UserListItem from "../users/UserListItem";
 import { toast } from "react-toastify";
-import UserBadgeItem from "./UserBadgeItem";
+import UserBadgeItem from "../users/UserBadgeItem";
 
 const GroupChatModal = ({ children }) => {
   const [groupData, setGroupData] = useState({

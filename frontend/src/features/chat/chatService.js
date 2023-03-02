@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/chat";
+const API_URL = "https://localhost:5000/api/chat";
 const getChats = async (token) => {
   const res = await axios.get(API_URL, {
     headers: { Authorization: `Bearer ${token}` },

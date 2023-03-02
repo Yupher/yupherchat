@@ -1,7 +1,7 @@
 import { FormControl, IconButton, Input } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { sendMessage } from "../features/messages/messageSlice";
+import { sendMessage } from "../../features/messages/messageSlice";
 
 const SendMessageInput = ({ selectedChat }) => {
   const [content, setContent] = useState("");

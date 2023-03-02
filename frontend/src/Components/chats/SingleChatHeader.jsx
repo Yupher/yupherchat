@@ -1,9 +1,9 @@
 import { Box, IconButton, Text } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
-import { clearSelectedChat } from "../features/chat/chatSlice";
+import { clearSelectedChat } from "../../features/chat/chatSlice";
 import React from "react";
 import UpdateGroupChatModal from "./UpdateGroupChatModal";
-import ProfileModal from "./ProfileModal";
+import ProfileModal from "../users/ProfileModal";
 
 const SingleChatHeader = ({ selectedChat, resetMessage }) => {
   const dispatch = useDispatch();

@@ -9,8 +9,8 @@ import {
   Tab,
   TabPanel,
 } from "@chakra-ui/react";
-import Login from "../Components/Login";
-import Signup from "../Components/Signup";
+import Login from "../Components/users/Login";
+import Signup from "../Components/users/Signup";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";

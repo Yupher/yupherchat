@@ -4,9 +4,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { Box, Spinner } from "@chakra-ui/react";
 import { getChats, reset } from "../features/chat/chatSlice";
-import SideDrawer from "../Components/SideDrawer";
-import MyChats from "../Components/MyChats";
-import Chatbox from "../Components/Chatbox";
+import SideDrawer from "../Components/layouts/SideDrawer";
+import MyChats from "../Components/chats/MyChats";
+import Chatbox from "../Components/chats/Chatbox";
 import {
   socket,
   setNotifications,
@@ -21,21 +21,25 @@ const Chats = () => {
 
   useEffect(() => {
     console.log(selectedChat);
-    socket.on("message recieved", (socketMessage) => {
-      console.log(socketMessage);
-      if (!selectedChat) {
-        const sound = new Audio("/sounds/harry-maguire.mp3");
-        sound.play();
+    socket.on(
+      "message recieved",
+      (socketMessage) => {
+        console.log(socketMessage);
+        if (!selectedChat) {
+          const sound = new Audio("/sounds/harry-maguire.mp3");
+          sound.play();
 
-        dispatch(setNotifications(socketMessage));
-      } else if (socketMessage.chat._id !== selectedChat._id) {
-        const sound = new Audio("/sounds/harry-maguire.mp3");
-        sound.play();
-        dispatch(setNotifications(socketMessage));
-      } else {
-        dispatch(recieveMessage(socketMessage));
-      }
-    });
+          dispatch(setNotifications(socketMessage));
+        } else if (socketMessage.chat._id !== selectedChat._id) {
+          const sound = new Audio("/sounds/harry-maguire.mp3");
+          sound.play();
+          dispatch(setNotifications(socketMessage));
+        } else {
+          dispatch(recieveMessage(socketMessage));
+        }
+      },
+      [selectedChat],
+    );
     return () => socket.off("message recieved");
   });
 

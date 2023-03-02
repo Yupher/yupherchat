@@ -1,47 +1,31 @@
-const express = require("express");
-const cors = require("cors");
+const fs = require("fs");
+const path = require("path");
+const app = require("./app");
+const spdy = require("spdy");
+const https = require("https");
 
-require("dotenv").config();
-require("colors");
-const app = express();
-const connectDb = require("./config/db");
-const {
-  NotFound,
-  errorHandler,
-  notFound,
-} = require("./middlewares/errorMiddleware");
+const options = {
+  key: fs.readFileSync(path.resolve(path.join(__dirname, "../", "key.pem"))),
+  cert: fs.readFileSync(
+    path.resolve(path.join(__dirname, "../", "certificate.pem")),
+  ),
+};
 
-connectDb();
+const server = spdy.createServer(options, app);
+//const server = https.createServer(options, app);
 
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-
-app.use("/api/users", require("./routes/usersRoutes"));
-app.use("/api/chat", require("./routes/chatRoutes"));
-app.use("/api/message", require("./routes/messageRoutes"));
-
-app.use(notFound);
-app.use(errorHandler);
-
-const port = process.env.PORT || 5000;
-const server = app.listen(port, () =>
-  console.log(`server runin at port ${port}`.blue.underline),
-);
 const io = require("socket.io")(server, {
   cors: { origin: process.env.FRONTEND_URL },
   pingTimeout: 60 * 1000,
 });
 
 io.on("connection", (socket) => {
-  console.log("client connected");
   socket.on("setup", (userData) => {
     //socket.join(userData._id);
     socket.emit("connected");
   });
-  console.log(socket.rooms);
+
   socket.on("join chat", (room) => {
-    console.log("user joined", room);
     socket.join(room);
   });
   socket.on("new message", (message) => {
@@ -50,3 +34,7 @@ io.on("connection", (socket) => {
     socket.to(chat._id).emit("message recieved", message);
   });
 });
+
+const port = process.env.PORT || 5000;
+
+server.listen(port, () => console.log("secure server running"));

@@ -9,7 +9,7 @@ import {
   socket,
   recieveMessage,
   setNotifications,
-} from "../features/messages/messageSlice";
+} from "../../features/messages/messageSlice";
 import SingleChatHeader from "./SingleChatHeader";
 import SendMessageInput from "./SendMessageInput";
 import ScrollableChat from "./ScrollableChat";
