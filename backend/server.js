@@ -3,6 +3,7 @@ const path = require("path");
 const app = require("./app");
 const spdy = require("spdy");
 const https = require("https");
+const socket = require("./config/io");
 
 const options = {
   key: fs.readFileSync(path.resolve(path.join(__dirname, "../", "key.pem"))),
@@ -14,25 +15,15 @@ const options = {
 const server = spdy.createServer(options, app);
 //const server = https.createServer(options, app);
 
-const io = require("socket.io")(server, {
-  cors: { origin: process.env.FRONTEND_URL },
+socket(server, {
+  cors: {
+    origin: [
+      process.env.FRONTEND_URL,
+      "http://localhost:5173",
+      "https://localhost:5173",
+    ],
+  },
   pingTimeout: 60 * 1000,
-});
-
-io.on("connection", (socket) => {
-  socket.on("setup", (userData) => {
-    //socket.join(userData._id);
-    socket.emit("connected");
-  });
-
-  socket.on("join chat", (room) => {
-    socket.join(room);
-  });
-  socket.on("new message", (message) => {
-    let { chat } = message;
-
-    socket.to(chat._id).emit("message recieved", message);
-  });
 });
 
 const port = process.env.PORT || 5000;

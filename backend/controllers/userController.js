@@ -29,13 +29,21 @@ exports.register = asyncHandler(async (req, res, next) => {
   let newUser = await User.create(user);
 
   if (newUser) {
-    return res.status(201).json({
-      _id: newUser.id,
-      name,
-      email,
-      picture: user.picture,
-      token: generateToken(newUser._id),
-    });
+    return res
+      .setHeader(
+        "Set-Cookie",
+        `auth_token=${generateToken(newUser._id)};path=/;Expires=${new Date(
+          expiresIn,
+        ).toUTCString()};HttpOnly=false;HostOnly=true,SameSite=true;Secure=true`,
+      )
+      .status(200)
+      .json({
+        _id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        picture: newUser.picture,
+        // token: generateToken(user._id),
+      });
   } else {
     res.status(400);
     throw new Error("Invalid user data");
@@ -54,13 +62,51 @@ exports.login = asyncHandler(async (req, res, next) => {
     throw new Error("Incorrect password or email");
   }
 
-  return res.status(200).json({
-    _id: user.id,
-    name: user.name,
-    email: user.email,
-    picture: user.picture,
-    token: generateToken(user._id),
-  });
+  // res.setHeader(
+  //   "Set-Cookie",
+  //   `auth-token=${generateToken(
+  //     user._id,
+  //   )};path=/;httpOnly=false;secure=false;sameSite=none;Expires=${new Date(
+  //     30 * 24 * 3600 * 1000,
+  //   ).toUTCString()}`,
+  // );
+
+  const expiresIn = Date.now() + 30 * 24 * 3600 * 1000;
+
+  return res
+    .setHeader(
+      "Set-Cookie",
+      `auth_token=${generateToken(user._id)};path=/;Expires=${new Date(
+        expiresIn,
+      ).toUTCString()};HttpOnly=false;HostOnly=true,SameSite=true;Secure=true`,
+    )
+    .status(200)
+    .json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      picture: user.picture,
+      // token: generateToken(user._id),
+    });
+  // return res.status(200).json({
+  //   _id: user.id,
+  //   name: user.name,
+  //   email: user.email,
+  //   picture: user.picture,
+  //   token: generateToken(user._id),
+  // });
+});
+
+exports.logout = asyncHandler(async (req, res, next) => {
+  res
+    .setHeader(
+      "Set-Cookie",
+      `auth_token=};path=/;Expires=${new Date(
+        -1,
+      ).toUTCString()};HttpOnly=false;HostOnly=true,SameSite=true;Secure=true`,
+    )
+    .status(200)
+    .json({ message: "Logged out" });
 });
 
 exports.getMe = asyncHandler(async (req, res, next) => {

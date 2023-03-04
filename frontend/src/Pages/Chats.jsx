@@ -48,6 +48,7 @@ const Chats = () => {
       toast.error(message);
     }
     if (!user) {
+      socket.disconnect();
       dispatch(reset());
     } else {
       dispatch(getChats());

@@ -12,8 +12,7 @@ const initialState = {
 
 export const getChats = createAsyncThunk("chat/get", async (_, thunkAPI) => {
   try {
-    const token = thunkAPI.getState().auth.user.token;
-    return await chatService.getChats(token);
+    return await chatService.getChats();
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) ||
@@ -27,8 +26,7 @@ export const accessChat = createAsyncThunk(
   "chat/access",
   async (userId, thunkAPI) => {
     try {
-      const token = thunkAPI.getState().auth.user.token;
-      return await chatService.accessChat(userId, token);
+      return await chatService.accessChat(userId);
     } catch (error) {
       const message =
         (error.response &&
@@ -45,8 +43,7 @@ export const createGroup = createAsyncThunk(
   "chat/createGroup",
   async (groupData, thunkAPI) => {
     try {
-      const token = thunkAPI.getState().auth.user.token;
-      return await chatService.createGroup(groupData, token);
+      return await chatService.createGroup(groupData);
     } catch (error) {
       const message =
         (error.response &&
@@ -63,8 +60,7 @@ export const renameGroup = createAsyncThunk(
   "chat/renameGroup",
   async (groupData, thunkAPI) => {
     try {
-      const token = thunkAPI.getState().auth.user.token;
-      return await chatService.renameGroup(groupData, token);
+      return await chatService.renameGroup(groupData);
     } catch (error) {
       const message =
         (error.response &&
@@ -81,8 +77,7 @@ export const addToGroup = createAsyncThunk(
   "chat/addToGroup",
   async (groupData, thunkAPI) => {
     try {
-      const token = thunkAPI.getState().auth.user.token;
-      return await chatService.addToGroup(groupData, token);
+      return await chatService.addToGroup(groupData);
     } catch (error) {
       const message =
         (error.response &&
@@ -99,8 +94,7 @@ export const deleteFromGroup = createAsyncThunk(
   "chat/deleteFromGroup",
   async (groupData, thunkAPI) => {
     try {
-      const token = thunkAPI.getState().auth.user.token;
-      return await chatService.deleteFromGroup(groupData, token);
+      return await chatService.deleteFromGroup(groupData);
     } catch (error) {
       const message =
         (error.response &&
@@ -117,8 +111,7 @@ export const deleteGroup = createAsyncThunk(
   "chat/deleteGroup",
   async (id, thunkAPI) => {
     try {
-      const token = thunkAPI.getState().auth.user.token;
-      return await chatService.deleteGroup(id, token);
+      return await chatService.deleteGroup(id);
     } catch (error) {
       const message =
         (error.response &&
