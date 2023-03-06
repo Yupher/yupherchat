@@ -140,6 +140,7 @@ export const chatSlice = createSlice({
     clearSelectedChat: (state) => {
       state.selectedChat = null;
     },
+    clearChats: (state) => initialState,
   },
   extraReducers: (builder) => {
     builder
@@ -261,5 +262,6 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { reset, selectChat, clearSelectedChat } = chatSlice.actions;
+export const { reset, selectChat, clearSelectedChat, clearChats } =
+  chatSlice.actions;
 export default chatSlice.reducer;

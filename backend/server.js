@@ -22,6 +22,7 @@ socket(server, {
       "http://localhost:5173",
       "https://localhost:5173",
     ],
+    credentials: true,
   },
   pingTimeout: 60 * 1000,
 });

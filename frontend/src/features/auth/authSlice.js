@@ -1,16 +1,32 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import authService from "./authService";
 
-const user = JSON.parse(localStorage.getItem("user"));
+//const user = JSON.parse(localStorage.getItem("user"));
 
 const initialState = {
-  user: user ? user : null,
+  user: null,
   isError: false,
   isSuccess: false,
   isLoading: false,
   message: "",
 };
-
+// get logged in user
+export const getAuthUser = createAsyncThunk(
+  "auth/getMe",
+  async (_, thunkAPI) => {
+    try {
+      return await authService.getAuthUser();
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  },
+);
 //Register User
 export const register = createAsyncThunk(
   "auth/register",
@@ -82,6 +98,7 @@ export const authSlice = createSlice({
       })
       .addCase(logout.pending, (state) => {
         state.isLoading = true;
+        state.user = null;
       })
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
@@ -89,6 +106,7 @@ export const authSlice = createSlice({
         state.isLoading = false;
       })
       .addCase(logout.rejected, (state) => {
+        state.user = null;
         state.isLoading = false;
         state.isSuccess = false;
         state.isLoading = false;
@@ -106,6 +124,21 @@ export const authSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.user = null;
+        state.message = action.payload;
+      })
+      .addCase(getAuthUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getAuthUser.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(getAuthUser.rejected, (state, action) => {
+        state.user = null;
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
         state.message = action.payload;
       });
   },

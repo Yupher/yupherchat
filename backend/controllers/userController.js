@@ -110,8 +110,8 @@ exports.logout = asyncHandler(async (req, res, next) => {
 });
 
 exports.getMe = asyncHandler(async (req, res, next) => {
-  let { _id, name, email } = req.user;
-  res.status(200).json({ id: _id, name, email });
+  //let { _id, name, email } = req.user;
+  res.status(200).json(req.user);
 });
 
 exports.getAll = asyncHandler(async (req, res, next) => {

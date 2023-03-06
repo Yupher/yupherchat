@@ -23,7 +23,12 @@ import { useDispatch, useSelector } from "react-redux";
 
 import ProfileModal from "../users/ProfileModal";
 import { logout, reset as userReset } from "../../features/auth/authSlice";
-import { accessChat, reset as chatReset } from "../../features/chat/chatSlice";
+import {
+  accessChat,
+  reset as chatReset,
+  clearChats,
+} from "../../features/chat/chatSlice";
+import { reset as clearMessages } from "../../features/messages/messageSlice";
 import { resetNotifications } from "../../features/messages/messageSlice";
 import {
   searchUsers,
@@ -32,9 +37,11 @@ import {
 import { toast } from "react-toastify";
 import SearchLoading from "./SearchLoading";
 import UserListItem from "../users/UserListItem";
+import { useNavigate } from "react-router-dom";
 
-const SideDrawer = ({ user }) => {
+const SideDrawer = ({ user, loadingUser }) => {
   const [search, setSearch] = useState("");
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { users, isLoading, isError, message } = useSelector(
@@ -60,6 +67,9 @@ const SideDrawer = ({ user }) => {
     dispatch(userReset());
     dispatch(chatReset());
     dispatch(logout());
+    dispatch(clearChats());
+    dispatch(clearMessages());
+    navigate("/");
   };
 
   const onUserClick = (userId) => {
@@ -132,18 +142,24 @@ const SideDrawer = ({ user }) => {
             <MenuButton
               as={Button}
               rightIcon={<i className='fas fa-chevron-down' />}
+              isLoading={loadingUser}
             >
-              <Avatar
-                size='sm'
-                cursor='pointer'
-                name={user.name}
-                src={user.picture}
-              />
+              {user && (
+                <Avatar
+                  size='sm'
+                  cursor='pointer'
+                  name={user.name}
+                  src={user.picture}
+                />
+              )}
             </MenuButton>
             <MenuList>
-              <ProfileModal user={user}>
-                <MenuItem>Profile</MenuItem>
-              </ProfileModal>
+              {user && (
+                <ProfileModal user={user}>
+                  <MenuItem>Profile</MenuItem>
+                </ProfileModal>
+              )}
+
               <MenuDivider />
               <MenuItem onClick={onLogout}>Logout</MenuItem>
             </MenuList>

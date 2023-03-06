@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { Box, Spinner } from "@chakra-ui/react";
@@ -12,42 +12,45 @@ import {
   setNotifications,
   recieveMessage,
 } from "../features/messages/messageSlice";
+import { getAuthUser } from "../features/auth/authSlice";
 
 const Chats = () => {
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const auth = useSelector((state) => state.auth);
   const { chats, selectedChat, isLoading, isError, isSuccess, message } =
     useSelector((state) => state.chats);
 
   useEffect(() => {
-    console.log(selectedChat);
-    socket.on(
-      "message recieved",
-      (socketMessage) => {
-        console.log(socketMessage);
-        if (!selectedChat) {
-          const sound = new Audio("/sounds/harry-maguire.mp3");
-          sound.play();
+    dispatch(getAuthUser());
+    socket.connect();
+  }, []);
+  useEffect(() => {
+    socket.on("message recieved", (socketMessage) => {
+      if (!selectedChat) {
+        const sound = new Audio("/sounds/harry-maguire.mp3");
+        sound.play();
 
-          dispatch(setNotifications(socketMessage));
-        } else if (socketMessage.chat._id !== selectedChat._id) {
-          const sound = new Audio("/sounds/harry-maguire.mp3");
-          sound.play();
-          dispatch(setNotifications(socketMessage));
-        } else {
-          dispatch(recieveMessage(socketMessage));
-        }
-      },
-      [selectedChat],
-    );
+        dispatch(setNotifications(socketMessage));
+      } else if (socketMessage.chat._id !== selectedChat._id) {
+        const sound = new Audio("/sounds/harry-maguire.mp3");
+        sound.play();
+        dispatch(setNotifications(socketMessage));
+      } else {
+        dispatch(recieveMessage(socketMessage));
+      }
+    });
     return () => socket.off("message recieved");
-  });
+  }, [selectedChat]);
 
   useEffect(() => {
     if (isError) {
       toast.error(message);
     }
-    if (!user) {
+
+    if (!auth.isLoading && (!auth.user || auth.isError)) {
+      auth.isError && toast.error(auth.message);
+      navigate("/");
       socket.disconnect();
       dispatch(reset());
     } else {
@@ -55,15 +58,19 @@ const Chats = () => {
     }
 
     dispatch(reset());
-  }, [user, isError, message]);
-
-  if (!user) {
-    return <Navigate to='/' />;
-  }
+  }, [
+    navigate,
+    auth.user,
+    isError,
+    auth.isError,
+    message,
+    auth.message,
+    auth.isLoading,
+  ]);
 
   return (
     <div style={{ width: "100%", height: "100%" }}>
-      <SideDrawer user={user} />
+      <SideDrawer user={auth.user} loadingUser={auth.isLoading} />
       <Box
         display='flex'
         justifyContent='space-between '

@@ -3,7 +3,7 @@ import messageService from "./messageService";
 import io from "socket.io-client";
 const END_POINT = "https://localhost:5000";
 
-export const socket = io(END_POINT);
+export const socket = io(END_POINT, { withCredentials: true });
 
 const initialState = {
   messages: [],
@@ -20,8 +20,7 @@ export const getMessages = createAsyncThunk(
     try {
       socket.emit("join chat", chatId);
 
-      const token = thunkAPI.getState().auth.user.token;
-      return await messageService.getAll(chatId, token);
+      return await messageService.getAll(chatId);
     } catch (error) {
       const message =
         (error.response &&
@@ -34,23 +33,27 @@ export const getMessages = createAsyncThunk(
   },
 );
 
-export const sendMessage = createAsyncThunk(
-  "messages/send",
-  async (messageData, thunkAPI) => {
-    try {
-      const token = thunkAPI.getState().auth.user.token;
-      return await messageService.send(messageData, token);
-    } catch (error) {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-      return thunkAPI.rejectWithValue(message);
-    }
-  },
-);
+// export const sendMessage = createAsyncThunk(
+//   "messages/send",
+//   async (messageData, thunkAPI) => {
+//     try {
+//       socket.emit("new message", messageData);
+//       socket.on("error", (err) => console.log(err));
+//       socket.on("message saved", (message) => {
+//         console.log(message);
+//         //messageSlice.actions.recieveMessage(message);
+//       });
+//     } catch (error) {
+//       const message =
+//         (error.response &&
+//           error.response.data &&
+//           error.response.data.message) ||
+//         error.message ||
+//         error.toString();
+//       return thunkAPI.rejectWithValue(message);
+//     }
+//   },
+// );
 
 export const messageSlice = createSlice({
   name: "messages",
@@ -62,6 +65,15 @@ export const messageSlice = createSlice({
       state.isSuccess = false;
       state.isError = false;
       state.message = "";
+    },
+    sendMessage: (state, action) => {
+      state.isSuccess = true;
+      state.messages = [...state.messages, action.payload];
+    },
+    sendMessageError: (state, action) => {
+      state.isSuccess = false;
+      state.isError = true;
+      state.message = action.payload;
     },
     recieveMessage: (state, action) => {
       state.messages = [...state.messages, action.payload];
@@ -92,15 +104,14 @@ export const messageSlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
         state.message = action.payload;
-      })
-      .addCase(sendMessage.fulfilled, (state, action) => {
-        socket.emit("new message", action.payload);
-        state.isSuccess = true;
-        state.messages = [...state.messages, action.payload];
-      })
-      .addCase(sendMessage.rejected, (state, action) => {
-        state.message = action.payload;
       });
+    // .addCase(sendMessage.fulfilled, (state, action) => {
+    //   state.isSuccess = true;
+    //   // state.messages = [...state.messages, action.payload];
+    // })
+    // .addCase(sendMessage.rejected, (state, action) => {
+    //   state.message = action.payload;
+    // });
   },
 });
 
@@ -110,6 +121,8 @@ export const {
   recieveMessage,
   setNotifications,
   resetNotifications,
+  sendMessage,
+  sendMessageError,
 } = messageSlice.actions;
 
 export default messageSlice.reducer;
