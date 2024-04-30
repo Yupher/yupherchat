@@ -15,6 +15,15 @@ const messageSchema = mongoose.Schema(
       trim: true,
       required: [true, "Message is empty!"],
     },
+    type: {
+      type: String,
+      trim: true,
+      required: [true, "Message must have type!"],
+    },
+    seen: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true },
 );

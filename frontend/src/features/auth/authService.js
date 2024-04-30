@@ -1,6 +1,6 @@
 import axios from "axios";
-
-const API_URL = "https://localhost:5000/api/users";
+const VITE_ENDPOINT = import.meta.env.VITE_ENDPOINT || "http://localhost:5000";
+const API_URL = `${VITE_ENDPOINT}/api/users`;
 
 const register = async (userData) => {
   let res = await axios.post(API_URL, userData);

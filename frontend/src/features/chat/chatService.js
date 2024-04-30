@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_URL = "https://localhost:5000/api/chat";
+const VITE_ENDPOINT = import.meta.env.VITE_ENDPOINT || "http://localhost:5000";
+const API_URL = `${VITE_ENDPOINT}/api/chat`;
 const getChats = async () => {
   const res = await axios.get(API_URL);
   return res.data;

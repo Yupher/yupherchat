@@ -1,9 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import messageService from "./messageService";
 import io from "socket.io-client";
-const END_POINT = "https://localhost:5000";
+const VITE_ENDPOINT = import.meta.env.VITE_ENDPOINT || "http://localhost:5000";
 
-export const socket = io(END_POINT, { withCredentials: true });
+export const socket = io(VITE_ENDPOINT, {
+  withCredentials: true,
+  autoConnect: true,
+  transports: ["websocket"],
+});
 
 const initialState = {
   messages: [],
@@ -94,7 +98,7 @@ export const messageSlice = createSlice({
       })
       .addCase(getMessages.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.messages = action.payload;
+        state.messages = [...state.messages, ...action.payload.reverse()];
         state.isSuccess = true;
         state.message = "";
       })

@@ -22,8 +22,11 @@ const Chats = () => {
     useSelector((state) => state.chats);
 
   useEffect(() => {
-    dispatch(getAuthUser());
     socket.connect();
+  });
+
+  useEffect(() => {
+    dispatch(getAuthUser());
   }, []);
   useEffect(() => {
     socket.on("message recieved", (socketMessage) => {

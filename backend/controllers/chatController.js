@@ -22,6 +22,7 @@ exports.accessChat = asyncHandler(async (req, res, next) => {
     path: "latestMessage.sender",
     select: "name picture email",
   });
+
   if (isChat.length > 0) {
     return res.status(200).json(isChat[0]);
   } else {
@@ -51,7 +52,11 @@ exports.accessChat = asyncHandler(async (req, res, next) => {
 });
 
 exports.fetchChats = asyncHandler(async (req, res, next) => {
+  const page =
+    req.query.page && req.query.page > 0 ? parseInt(req.query.page, 10) : 1;
   let chats = await Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
+    .skip((page - 1) * 15)
+    .limit(15)
     .populate("users", "-password")
     .populate("groupAdmin", "-password")
     .populate("latestMessage")

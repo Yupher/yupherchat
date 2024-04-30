@@ -4,11 +4,13 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/userModel");
 const uploadImage = require("../config/imageUpload");
 
-const generateToken = (id) =>
-  jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+};
 
 exports.register = asyncHandler(async (req, res, next) => {
   let { name, email, password, picture } = req.body;
+
   if (!name || !email || !password) {
     res.status(400);
     throw new Error("Fields are required!");
@@ -29,12 +31,13 @@ exports.register = asyncHandler(async (req, res, next) => {
   let newUser = await User.create(user);
 
   if (newUser) {
+    const expiresIn = Date.now() + 30 * 24 * 3600 * 1000;
     return res
       .setHeader(
         "Set-Cookie",
         `auth_token=${generateToken(newUser._id)};path=/;Expires=${new Date(
           expiresIn,
-        ).toUTCString()};HttpOnly=false;HostOnly=true,SameSite=true;Secure=true`,
+        ).toUTCString()};HttpOnly=true;HostOnly=true,SameSite=true;Secure=true`,
       )
       .status(200)
       .json({
@@ -42,7 +45,7 @@ exports.register = asyncHandler(async (req, res, next) => {
         name: newUser.name,
         email: newUser.email,
         picture: newUser.picture,
-        // token: generateToken(user._id),
+        token: generateToken(user._id),
       });
   } else {
     res.status(400);
@@ -78,7 +81,7 @@ exports.login = asyncHandler(async (req, res, next) => {
       "Set-Cookie",
       `auth_token=${generateToken(user._id)};path=/;Expires=${new Date(
         expiresIn,
-      ).toUTCString()};HttpOnly=false;HostOnly=true,SameSite=true;Secure=true`,
+      ).toUTCString()};HttpOnly=true;HostOnly=true,SameSite=true;Secure=true`,
     )
     .status(200)
     .json({
@@ -86,7 +89,7 @@ exports.login = asyncHandler(async (req, res, next) => {
       name: user.name,
       email: user.email,
       picture: user.picture,
-      // token: generateToken(user._id),
+      token: generateToken(user._id),
     });
   // return res.status(200).json({
   //   _id: user.id,
@@ -115,18 +118,26 @@ exports.getMe = asyncHandler(async (req, res, next) => {
 });
 
 exports.getAll = asyncHandler(async (req, res, next) => {
+  console.log(req.query);
   const keyword = req.query.search
     ? {
         $or: [
           { name: { $regex: req.query.search, $options: "i" } },
           { email: { $regex: req.query.search, $options: "i" } },
+          { phone: { $regex: req.query.search } },
         ],
       }
     : {};
 
+  const page =
+    req.query.page && req.query.page > 0 ? parseInt(req.query.page, 10) : 1;
+
   const users = await User.find(keyword)
     .find({ _id: { $ne: req.user._id } })
-    .select("-password");
-
+    .select("-password")
+    .sort({ createdAt: 1 })
+    .skip((page - 1) * 10)
+    .limit(10);
+  console.log(users);
   res.status(200).json(users);
 });
