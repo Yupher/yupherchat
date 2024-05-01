@@ -1,5 +1,6 @@
 node_modules
 .env
-
+backend/assets/uploads/*
 api.log
 logfile.log
+key.pem
