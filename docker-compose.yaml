@@ -1,0 +1,33 @@
+services:
+  app1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend_0
+    ports:
+      - "5000:5000" # Map host port 5000 to container port 5000
+    environment:
+      - NODE_ENV=production
+      # Add any other environment variables specific to app1
+
+  app2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend_1
+    ports:
+      - "5100:5000" # Map host port 5100 to container port 5000
+    environment:
+      - NODE_ENV=production
+      # Add any other environment variables specific to app2
+
+  app3:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend_2
+    ports:
+      - "5200:5000" # Map host port 5200 to container port 5000
+    environment:
+      - NODE_ENV=production
+      # Add any other environment variables specific to app3

@@ -7,7 +7,8 @@
     "client-install": "npm install --prefix frontend",
     "client-build": "npm run build --prefix frontend",
     "server-install": "npm install",
-    "start": "node backend/server.js",
+    "start-server": "node backend/server.js",
+    "start": "npm run client-install && run client-build && npm run server-install && npm run start-server",
     "dev": "nodemon backend/server.js"
   },
   "keywords": [],
