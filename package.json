@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "client-install": "npm install --prefix frontend",
+    "client-install": "npm install --production=false --prefix frontend",
     "client-build": "npm run build --prefix frontend",
     "server-install": "npm install",
     "start-server": "node backend/server.js",
