@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const app = require("./app");
+
 //const spdy = require("spdy");
 const http = require("http");
 const socket = require("./config/io");
@@ -29,8 +30,10 @@ socket(server, {
     credentials: true,
   },
   pingTimeout: 60 * 1000,
-});
+})
+  .then(() => {
+    const port = process.env.PORT || 5000;
 
-const port = process.env.PORT || 5000;
-
-server.listen(port, () => console.log("secure server running"));
+    server.listen(port, () => console.log("secure server running"));
+  })
+  .catch((e) => console.log("error running the server: ", e));
